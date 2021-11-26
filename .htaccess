@@ -1,0 +1,15 @@
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+RewriteRule sitemap.xml sitemap.php
+RewriteRule sitemap sitemap.php
+<IfModule mod_rewrite.c>
+  RewriteCond %{REQUEST_FILENAME} !-d 
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteRule ^product/([^.]*)$ product/index.php/?id=$1&b=$1 [QSA,L]
+</IfModule>
+<IfModule mod_rewrite.c>
+  RewriteCond %{REQUEST_FILENAME} !-d 
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteRule ^page=([^.]*)$  /?id=([^.]*)$  [QSA,L]
+</IfModule>
