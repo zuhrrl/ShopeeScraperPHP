@@ -9,7 +9,7 @@ if (isset($_GET['page'])) {
     $page = 1;
 }
 
-if(isset($_GET['search'])) {
+if (isset($_GET['search'])) {
     $searchQuery = $_GET['search'];
 }
 
@@ -18,18 +18,19 @@ $base_url = $_SERVER['SERVER_NAME'];
 $product_url = "/product/";
 
 $no_of_records_per_page = 8;
-$offset = ($page-1) * $no_of_records_per_page; 
+$offset = ($page-1) * $no_of_records_per_page;
 
 $productlink = null;
 $total_pages_sql = "SELECT COUNT(*) FROM products";
-$result = mysqli_query($conn,$total_pages_sql);
+$result = mysqli_query($conn, $total_pages_sql);
 $total_rows = mysqli_fetch_array($result)[0];
 $total_pages = ceil($total_rows / $no_of_records_per_page);
 
 // checking if product not found in url error 404
-function is_404($url) {
+function is_404($url)
+{
     $handle = curl_init($url);
-    curl_setopt($handle,  CURLOPT_RETURNTRANSFER, TRUE);
+    curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
 
     /* Get the HTML or whatever is linked in $url. */
     $response = curl_exec($handle);
@@ -51,14 +52,7 @@ function is_404($url) {
 
 <!-- Header -->
 
-<?php 
-$website_name = "Kaosqu.com";
-$page_subtitle = "Voucher Shopee Gratis Ongkir dan Diskon Terbaru";
-$page_description ="Belanja Online dari Brand Ternama 100% Original & Gratis Ongkir";
-$page_name = $website_name." | ".$page_subtitle;
-$title = $page_name;
-$og_image;
-include 'partials/header.php'; ?>
+<?php include 'partials/header.php'; ?>
 
 <body class="bg-gray-200">
 
@@ -135,6 +129,22 @@ include 'partials/header.php'; ?>
                             return $imageurl;
                         }
 
+                        // format paragraph
+                        function formatParagraph($text)
+                        {
+                            $text = str_replace("\r\n", "\n", $text);
+                            $paragraphs = preg_split("/[\n]{2,}/", $text);
+                            foreach ($paragraphs as $key => $p) {
+                                $paragraphs[$key] =
+                                    "<p class='text-gray-700  text-sm'>" .
+                                    str_replace("\n", "<br />", $paragraphs[$key]) .
+                                    "</p>";
+                            }
+            
+                            $text = implode("", $paragraphs);
+                            return $text;
+                        }
+
                         // remove space
                         function removeSpace($desc)
                         {
@@ -145,46 +155,39 @@ include 'partials/header.php'; ?>
                         /* change character set to utf8 */
                         if (!$conn->set_charset("utf8")) {
                         } else {
-                             $conn->character_set_name();
+                            $conn->character_set_name();
                         }
 
 
-                        if(isset($_GET['search'])) {
+                        if (isset($_GET['search'])) {
                             $sql = "SELECT product_name, product_description, product_images, product_price, product_link, product_itemid, product_shopid, product_thumbnail,product_stock, product_rating, product_category, product_review_count, product_brand FROM products WHERE product_name LIKE '{$searchQuery}%' ORDER BY id DESC LIMIT $offset, $no_of_records_per_page ";
-                        $result = $conn->query($sql);
+                            $result = $conn->query($sql);
 
-                        if ($result->num_rows > 0) {
-                        // output data of each row
-                        while($product = $result->fetch_assoc()) {
-                            $productImage = getProductImageUrl($product['product_thumbnail']);
-                            $productName = $product['product_name'];
-                            $productDescription = $product['product_description'];
+                            if ($result->num_rows > 0) {
+                                // output data of each row
+                                while ($product = $result->fetch_assoc()) {
+                                    $productImage = $product['product_thumbnail'];
+                                    $productName = $product['product_name'];
+                                    $productDescription = $product['product_description'];
+                                    $productName =  preg_replace('/\s+/', ' ', $productName);
+                                    if (strlen($productName) <=50) {
+                                        $productName = "Sedang ada Promo ".$productName;
+                                    }
+                                    $productName = substr($productName, 0, 46);
 
-                            // if product name length more than 46
-                            if(strlen($productName) > 46) {
-                                $productName = explode("\n", wordwrap(removeSpace($productName), 47));
-                                $productName = $productName[0];
-
-                            }
-                            if(strlen($productName) < 46) {
-                                $productName = $productName;
-
-                            }
-                            // if product description lenght more than 53
-                            if(strlen($productDescription) > 55) {
-                                $productDescription = explode("\n", wordwrap(removeSpace($product['product_description']), 55));
-                                $productDescription = $productDescription[0];
-                            }
-                            if(strlen($productDescription) < 55) {
-                                $productDescription = $productDescription;
-                            }
-                            $productlink = $product_url.$product['product_link'];
-                            $productPrice = $product['product_price'];
-                            $productPrice = number_format($productPrice);
+                                    $productDescription =  preg_replace('/\s+/', ' ', $productDescription);
+                                  
+                                    $productDescription = substr($productDescription, 0, 85);
+                                    
+                                    
+                                    
+                                    $productlink = $product_url.$product['product_link'];
+                                    $productPrice = $product['product_price'];
+                                    $productPrice = number_format($productPrice);
 
                            
 
-                            echo "<div class='w-full max-w-sm mx-auto rounded-md shadow-md overflow-hidden'>
+                                    echo "<div class='w-full max-w-sm mx-auto rounded-md shadow-md overflow-hidden'>
                             <div class='flex items-end justify-end h-56 w-full bg-cover'
                                 style='background-image: url({$productImage})'>
                                 <button
@@ -194,8 +197,8 @@ include 'partials/header.php'; ?>
                             </div>
                             <div class='px-5 py-3'>
                                 <a href='{$productlink}'><h3 class='text-blue-700 mt-2'>{$productName}...</h3></a>
-                                <p class='text-gray-600 mt-5'>{$productDescription}...
-                                </p>
+                                <div class='text-gray-600 mt-5'>{$formated_desc}
+                                </div>
                                 <div class='flex items-center justify-center mt-6'>
                                     <a href='{$productlink}'
                                         class='px-8 py-2 bg-indigo-600 text-white text-sm font-medium rounded hover:bg-indigo-500 focus:outline-none focus:bg-indigo-500'>Lihat Detail</a>
@@ -203,52 +206,41 @@ include 'partials/header.php'; ?>
                                 </div>
                             </div>
                         </div>";
-                        }
-                        } else {
-                            echo "
+                                }
+                            } else {
+                                echo "
                             <p class='text-gray-600 mt-5'>Whoops Tidak ada Hasil
                             </p>
                             ";
-                        }
-                        $conn->close();
-
-
+                            }
+                            $conn->close();
                         }
 
-                        if(!isset($_GET['search'])) {
+                        if (!isset($_GET['search'])) {
                             $sql = "SELECT product_name, product_description, product_images, product_price, product_link, product_itemid, product_shopid, product_thumbnail,product_stock, product_rating, product_category, product_review_count, product_brand FROM products ORDER BY id DESC LIMIT $offset, $no_of_records_per_page ";
                             $result = $conn->query($sql);
     
                             if ($result->num_rows > 0) {
-                            // output data of each row
-                            while($product = $result->fetch_assoc()) {
-                                $productImage = $product['product_thumbnail'];
-                                $productName = $product['product_name'];
-                                $productDescription = $product['product_description'];
-                                
-                             
-                                // if product name length more than 46
-                                if(strlen($productName) > 46) {
-                                    $productName = explode("\n", wordwrap(removeSpace($productName), 47));
-                                    $productName = $productName[0];
+                                // output data of each row
+                                while ($product = $result->fetch_assoc()) {
+                                    $productImage = $product['product_thumbnail'];
+                                    $productName = $product['product_name'];
+                                    $productDescription = $product['product_description'];
+                                    $productName =  preg_replace('/\s+/', ' ', $productName);
+                                    if (strlen($productName) <=50) {
+                                        $productName = "Sedang ada Promo ".$productName;
+                                    }
+                                    $productName = substr($productName, 0, 46);
 
-                                }
-                                if(strlen($productName) < 46) {
-                                    $productName = $productName;
-
-                                }
-                                // if product description lenght more than 53
-                            if(strlen($productDescription) > 55) {
-                                $productDescription = explode("\n", wordwrap(removeSpace($product['product_description']), 55));
-                                $productDescription = $productDescription[0];
-                            }
-                            if(strlen($productDescription) < 55) {
-                                $productDescription = $productDescription;
-                            }
-                                $productlink = $product_url.$product['product_link'];
-                                $productPrice = $product['product_price'];
-                                $productPrice = number_format($productPrice);
-                                echo "
+                                    $productDescription =  preg_replace('/\s+/', ' ', $productDescription);
+                                  
+                                    $productDescription = substr($productDescription, 0, 70);
+                                    
+                                    
+                                    $productlink = $product_url.$product['product_link'];
+                                    $productPrice = $product['product_price'];
+                                    $productPrice = number_format($productPrice);
+                                    echo "
                                 <article>
                                 <div class='w-full max-w-sm mx-auto rounded-md shadow-md overflow-hidden'>
                                 <div class='flex items-end justify-end h-56 w-full bg-cover'
@@ -271,12 +263,11 @@ include 'partials/header.php'; ?>
                                     </div>
                                 </div>
                             </div></article>";
-                            }
+                                }
                             } else {
-                            echo "0 results";
+                                echo "0 results";
                             }
                             $conn->close();
-    
                         }
 
 
@@ -291,29 +282,29 @@ include 'partials/header.php'; ?>
                         <div class="flex rounded-md mt-8">
 
 
-                            <a href="<?php if($page <= 1){ echo '#'; } else {
-                             if(isset($_GET['search'])) {
-                                echo "page=".($page - 1)."&search={$searchQuery}"; 
-                            }
-                            else {
-                                echo "page=".($page - 1); 
-                            }
-                             } ?>"
+                            <a href="<?php if ($page <= 1) {
+                        echo '#';
+                    } else {
+                        if (isset($_GET['search'])) {
+                            echo "page=".($page - 1)."&search={$searchQuery}";
+                        } else {
+                            echo "page=".($page - 1);
+                        }
+                    } ?>"
                                 class="py-2 px-4 leading-tight bg-white border border-gray-200 text-blue-700 border-r-0 ml-0 rounded-l hover:bg-blue-500 hover:text-white"><span>Previous</a></a>
-                            <a href="<?php if($page >= $total_pages){ echo '#'; } else { 
-                            if(isset($_GET['search'])) {
-                                echo "page=".($page + 1)."&search={$searchQuery}"; 
-                            }
-                            else {
-                                echo "page=".($page + 1); 
-                            }
-                            
-                            } ?>"
-                                class="py-2 px-4 leading-tight bg-white border border-gray-200 text-blue-700 rounded-r hover:bg-blue-500 hover:text-white"><span><?php 
-                            if($page >= $total_pages) {
+                            <a href="<?php if ($page >= $total_pages) {
+                        echo '#';
+                    } else {
+                        if (isset($_GET['search'])) {
+                            echo "page=".($page + 1)."&search={$searchQuery}";
+                        } else {
+                            echo "page=".($page + 1);
+                        }
+                    } ?>"
+                                class="py-2 px-4 leading-tight bg-white border border-gray-200 text-blue-700 rounded-r hover:bg-blue-500 hover:text-white"><span><?php
+                            if ($page >= $total_pages) {
                                 echo "Last";
-                            }
-                            else {
+                            } else {
                                 echo "Next";
                             }
                             ?></span></a>

@@ -19,7 +19,6 @@ $title;
 $description = null;
 $thumbnail;
 
-
 if ($result->num_rows > 0) {
     // output data of each row
     while ($product = $result->fetch_assoc()) {
@@ -28,7 +27,7 @@ if ($result->num_rows > 0) {
         $description = explode("\n", wordwrap(removeSpace($description), 80));
         $description = json_encode($description[0]);
         $thumbnail = $product["product_thumbnail"];
-        $thumbnail = "https://".$base_url.$thumbnail;
+        $thumbnail = "https://" . $base_url . $thumbnail;
     }
 
     if (str_contains($description, '"')) {
@@ -42,26 +41,21 @@ if ($result->num_rows > 0) {
 
 <!-- Header -->
 
-<?php 
-$website_name = "Kaosqu.com";
-if(isset($description) && isset($thumbnail)) {
+<?php
+if (isset($description) && isset($thumbnail)) {
     $page_description = $description;
-    $page_name = "Jual ".$title." | ".$website_name;
+    $page_name = "Jual " . $title . " | " . $website_name;
     $title = $page_name;
     $og_image = $thumbnail;
-}
-else {
+} else {
     $og_image = "";
 }
 
-
-
-include '../partials/header.php'; 
+include "../partials/header.php";
 ?>
 
 <body class="bg-gray-200">
 
-    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
 
     <div x-data="{ cartOpen: false , isOpen: false }" class="bg-white">
         <header>
@@ -99,7 +93,7 @@ include '../partials/header.php';
                 
 
                             <!-- Navigation -->
-                            <?php include '../partials/navigation.php'; ?>
+                            <?php include "../partials/navigation.php"; ?>
 
                 <div class="relative mt-6 max-w-lg mx-auto">
                     <span id="search" class="absolute inset-y-0 left-0 pl-3 flex items-center">
@@ -123,6 +117,22 @@ include '../partials/header.php';
             <div class="container mx-auto px-6">
 
             <?php
+            // formating paragraph
+            function formatParagraph($text)
+            {
+                $text = str_replace("\r\n", "\n", $text);
+                $paragraphs = preg_split("/[\n]{2,}/", $text);
+                foreach ($paragraphs as $key => $p) {
+                    $paragraphs[$key] =
+                        "<p class='text-gray-700  text-sm'>" .
+                        str_replace("\n", "<br />", $paragraphs[$key]) .
+                        "</p>";
+                }
+
+                $text = implode("", $paragraphs);
+                return $text;
+            }
+
             // get images path
             function getProductImageUrl($image)
             {
@@ -156,11 +166,13 @@ include '../partials/header.php';
                     $productReviewCount = $product["product_review_count"];
                     $productBrand = $product["product_brand"];
                     $priceSchema = $product["product_price"] . ".00";
+                    $formatedParagraph = formatParagraph($productDescription);
 
                     echo "
                             <div itemscope itemtype='https://schema.org/Product'>
-                            <div class='md:flex md:items-center'>
+                            <div class='md:flex'>
                             <div class='w-full h-64 md:w-1/2 lg:h-96'>
+                            
                                 <img itemprop='image' class='h-full w-full rounded-md object-cover max-w-lg mx-auto'
                                     src='{$productImage}'
                                     alt='{$productName}'>
@@ -174,22 +186,24 @@ include '../partials/header.php';
                             
                             <div class='w-full max-w-lg mx-auto mt-5 md:ml-8 md:mt-0 md:w-1/2'>
                             <div itemprop='offers' itemscope itemtype='https://schema.org/Offer'>
-    <span itemprop='priceCurrency' content='IDR'></span>
-    <span itemprop='price' content='{$priceSchema}'></span>
-    <span itemprop='url' content='{$productlink}'></span>
-    <link itemprop='availability' href='https://schema.org/InStock' />
+                            <span itemprop='priceCurrency' content='IDR'></span>
+                            <span itemprop='price' content='{$priceSchema}'></span>
+                            <span itemprop='url' content='{$productlink}'></span>
+                            <link itemprop='availability' href='https://schema.org/InStock' />
+                            </div>
+
                                 
                                 <header>
   
-                                <a href='{$productlink}'><h3 class='text-blue-700 uppercase text-lg'>{$productName}</h3></a>
+                                <h1 class='text-blue-700 uppercase text-lg'><a href='{$productlink}'>Jual {$productName}</a></h1>
                                 <span class='text-gray-500 mt-3'>Rp.{$productPrice}</span>
-                                </div>
+                                </header>
                                 <hr class='my-3'>
-                                <p itemprop='description' class='text-gray-700  text-sm'>
+                                <div itemprop='description'>
 
-                                {$productDescription}
+                                {$formatedParagraph}
 
-                                </p></header>";
+                                </div>";
                     // if review is 0
                     if ($productReviewCount < 1) {
                         echo "<div class='mb-1 tracking-wide px-4 py-4'>
@@ -279,7 +293,7 @@ include '../partials/header.php';
                                             </div>
                                         </div>
                                     </div>
-                                    </div></article>";
+                                    </div>";
                     } else {
                         echo "<div class='mb-1 tracking-wide px-4 py-4'>
                                         <div itemprop='aggregateRating' 
@@ -376,7 +390,7 @@ include '../partials/header.php';
                                                 </div>
                                             </div>
                                         </div>
-                                        </div></article>";
+                                        </div>";
                     }
                 }
             } else {
@@ -388,11 +402,12 @@ include '../partials/header.php';
 
                
             </div>
+            </article>
         </section>
         </main>
 
         <!-- Footer -->
-        <?php include '../partials/footer.php'; ?>
+        <?php include "../partials/footer.php"; ?>
 
 </body>
 

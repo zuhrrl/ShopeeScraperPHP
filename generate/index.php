@@ -5,6 +5,7 @@ include "../config/config.php";
 include "../lib/imagewebp.php";
 
 
+$api_url = "https://api.kaosqu.com/agcshopee/";
 $productName;
 $productDescription;
 $productImages = [];
@@ -43,29 +44,14 @@ if (isset($_GET["cron"])) {
 }
 
 // get keywords from database
-function getbyKeywords($keywords)
-{
-    global $conn;
+function getbyKeywords($keywords) {
+    global $api_url;
     $keywords = json_decode($keywords);
-    /*
-    $sql = "SELECT keyword FROM admin";
-    $result = $conn->query($sql);
-
-    if ($result->num_rows > 0) {
-    // output data of each row
-        while($kw = $result->fetch_assoc()) {
-            $kw = $kw['keyword'];
-            $kw = preg_replace('/\s+/', '', $kw);
-            $productgrabtype = "https://shopee.co.id/api/v4/search/search_items?by=relevancy&keyword={$kw}&limit=60&newest=0&order=desc&page_type=search&scenario=PAGE_GLOBAL_SEARCH&version=2";
-            $products = grabShopee($productgrabtype);
-            connectShopee($products);
-        }
-    }
-    */
     foreach ($keywords as $keyword) {
         $keyword = preg_replace("/\s+/", "", $keyword);
-        $productgrabtype = "https://shopee.co.id/api/v4/search/search_items?by=relevancy&keyword={$keyword}&limit=60&newest=0&order=desc&page_type=search&scenario=PAGE_GLOBAL_SEARCH&version=2";
+        $productgrabtype = $api_url."?action=get&keywords=".$keyword;
         $products = grabShopee($productgrabtype);
+        // do curl
         connectShopee($products);
     }
 }
@@ -82,32 +68,19 @@ function grabShopee($url)
     return $resp;
 }
 
-// grab by keyword
-
-/*if (isset($_GET['query'])) {
-    $query = $_GET['query'];
-    $productgrabtype = "https://shopee.co.id/api/v4/search/search_items?by=relevancy&keyword=iphone 11&limit=60&newest=0&order=desc&page_type=search&scenario=PAGE_GLOBAL_SEARCH&version=2";
-    echo "oke";
-    echo $query;
-    $data = grabShopee($productgrabtype);
-    connectShopee($data);
-} else {
-    getTrending();
-}
-*/
 
 // function get trending search
-function getTrending()
-{
+function getTrending() {
+    global $api_url;
     $trends = grabShopee(
-        "https://shopee.co.id/api/v4/search/trending_search?bundle=popsearch&limit=15&offset=0"
+        $api_url."?action=gettrending"
     );
     $trends = json_decode($trends);
     $trends = $trends->data->querys;
     foreach ($trends as $trend) {
         $trend = $trend->text;
         $trend = preg_replace("/\s+/", "", $trend);
-        $productgrabtype = "https://shopee.co.id/api/v4/search/search_items?by=relevancy&keyword={$trend}&limit=60&newest=0&order=desc&page_type=search&scenario=PAGE_GLOBAL_SEARCH&version=2";
+        $productgrabtype = $api_url."?action=get&keywords=".$trend;
         $products = grabShopee($productgrabtype);
         connectShopee($products);
     }
@@ -125,18 +98,17 @@ function getProductUrl($productName, $itemid, $shopid)
     if (str_contains($url, "!")) {
         $url = str_replace("!", "", $url);
     }
-    if (str_contains($url, "?")) {
-        $url = str_replace("?", "", $url);
+    if (str_contains($url, "+")) {
+        $url = str_replace("+", "", $url);
     }
+   
     if (str_contains($url, "---")) {
         $url = str_replace("---", "", $url);
     }
     if (str_contains($url, ".")) {
         $url = str_replace(".", "", $url);
     }
-    if (str_contains($url, "--")) {
-        $url = str_replace("---", "", $url);
-    }
+   
     if (str_contains($url, "|")) {
         $url = str_replace("|", "", $url);
     }
@@ -151,6 +123,21 @@ function getProductUrl($productName, $itemid, $shopid)
     }
     if (str_contains($url, ",")) {
         $url = str_replace(",", "", $url);
+    }
+    if (str_contains($url, "%")) {
+        $url = str_replace("%", "", $url);
+    }
+    if (str_contains($url, "--")) {
+        $url = str_replace("--", "", $url);
+    }
+    if (str_contains($url, '"')) {
+        $url = str_replace('"', "", $url);
+    }
+    if (str_contains($url, "”")) {
+        $url = str_replace("”", "", $url);
+    }
+    if (str_contains($url, "?")) {
+        $url = str_replace("?", "", $url);
     }
     // replace end url if contain symbol -
     if(str_contains(substr($url, -1), "-")) {
@@ -181,6 +168,7 @@ function getProductPrice($price)
 function connectShopee($products)
 {
     global $conn;
+    global $api_url;
     $products = json_decode($products)->items;
     foreach ($products as $product) {
         $productName = $product->item_basic->name;
@@ -201,7 +189,7 @@ function connectShopee($products)
         $productPrice = getProductPrice($productPrice);
         // next curl to get product description
         $grabProduct = grabShopee(
-            "https://shopee.co.id/api/v4/item/get?itemid={$productItemId}&shopid={$productShopId}"
+            $api_url."?action=getproductdata&product_item_id=".$productItemId."&product_shop_id=".$productShopId
         );
         $grabProduct = json_decode($grabProduct);
         $productDescription = $grabProduct->data->description;
@@ -276,39 +264,16 @@ function connectShopee($products)
 }
 ?>
 
-<!doctype html>
-<html lang="en">
+<!-- Header -->
 
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="manifest" href="/site.webmanifest">
-    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#0ed3cf">
-    <meta name="msapplication-TileColor" content="#0ed3cf">
-    <meta name="theme-color" content="#0ed3cf">
-    <meta name="robots" content="noindex">
-
-    <meta property="og:image" content="https://kaosqu.com/images/thumbnail.png" />
-    <meta property="og:image:width" content="1280" />
-    <meta property="og:image:height" content="640" />
-    <meta property="og:image:type" content="image/png" />
+<?php 
+ $page_subtitle = "Admin Panel"; // Subtitle contoh: Example | Subtitle
+ $page_description ="A Powerfull Shopee Auto Content Generator"; // Description untuk meta
+ $page_name = $website_name." | ".$page_subtitle;
+ $title = $page_name;
 
 
-    <meta property="og:title" content="Kaosqu.com | Generate Content" />
-    <meta property="og:description" content="A Powerful Shopee Content Generator" />
-    <script src="../javascripts/jquery.min.js"></script>
-    <title>Admin Panel - Generate </title>
-
-    <link rel="stylesheet" href="/assets/stylesheets/style.css">
-    <link rel="stylesheet" href="https://pagecdn.io/lib/font-awesome/5.10.0-11/css/all.min.css" integrity="sha256-p9TTWD+813MlLaxMXMbTA7wN/ArzGyW/L7c5+KkjOkM=" crossorigin="anonymous">
-</head>
+include '../partials/header.php'; ?>
 
 <body class="bg-gray-200">
 

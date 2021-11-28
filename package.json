@@ -32,6 +32,7 @@
   "license": "ISC",
   "dependencies": {
     "alpinejs": "^3.5.2",
+    "ga-gtag": "^1.1.1",
     "jquery": "^3.6.0"
   }
 }

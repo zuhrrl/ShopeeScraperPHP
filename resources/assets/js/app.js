@@ -1,9 +1,15 @@
 // Jquery
-var $ = require( "jquery" );
+var $ = require("jquery");
 // Alpinejs
 import Alpine from 'alpinejs'
 window.Alpine = Alpine
 Alpine.start()
+
+// google analystic
+const { gtag, install } = require("ga-gtag");
+
+install('G-0J9479YGFT');
+gtag('config', 'G-0J9479YGFT');
 
 // handling event
 
