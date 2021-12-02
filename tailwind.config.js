@@ -3,7 +3,7 @@ module.exports = {
     './public/**/*.{vue,js,ts,jsx,tsx,php,html}',
     './home/**/*.{vue,js,ts,jsx,tsx,php,html}',
     './product/**/*.{vue,js,ts,jsx,tsx,php,html}',
-    './generate/**/*.{vue,js,ts,jsx,tsx,php,html}'
+    './admin/**/*.{vue,js,ts,jsx,tsx,php,html}'
 
   ],
   darkMode: false, // or 'media' or 'class'

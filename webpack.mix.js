@@ -14,7 +14,7 @@ let mix = require('laravel-mix');
 
 
 mix.js('resources/assets/js/app.js', '/assets/javascripts/app.js')
-mix.postCss('resources/assets/css/style.css', '/assets/stylesheets/style.css')
+mix.sass('resources/assets/css/style.scss', '/assets/stylesheets/style.css')
 mix.autoload({ 'jquery': ['window.$', 'window.jQuery'] })
 mix.options({
     postCss: [

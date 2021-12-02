@@ -37,7 +37,7 @@ echo "<changefreq>daily</changefreq>" . PHP_EOL;
 echo "</url>" . PHP_EOL;
 
 $sql =
-    "SELECT product_link FROM products ORDER BY id DESC";
+    "SELECT product_link FROM products ORDER BY id DESC LIMIT 50";
 $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {

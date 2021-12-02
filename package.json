@@ -18,6 +18,9 @@
     "postcss": "^8.2.9",
     "postcss-import": "^14.0.1",
     "postcss-nested": "^5.0.0",
+    "resolve-url-loader": "^4.0.0",
+    "sass": "^1.43.5",
+    "sass-loader": "^12.1.0",
     "tailwindcss": "^2.1.1"
   },
   "name": "com.agcshopee.app",
@@ -31,6 +34,7 @@
   "author": "Zuhrul Anam",
   "license": "ISC",
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.15.4",
     "alpinejs": "^3.5.2",
     "ga-gtag": "^1.1.1",
     "jquery": "^3.6.0"

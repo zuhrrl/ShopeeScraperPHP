@@ -13,3 +13,26 @@ RewriteRule sitemap sitemap.php
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteRule ^page=([^.]*)$  ?page=$1&b=$1 [QSA,L]
 </IfModule>
+<IfModule mod_rewrite.c>
+  RewriteCond %{REQUEST_FILENAME} !-d 
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteRule ^shop / [QSA,L]
+</IfModule>
+
+<IfModule mod_rewrite.c>
+  RewriteCond %{REQUEST_FILENAME} !-d 
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteRule ^generate /admin [QSA,L]
+</IfModule>
+
+<IfModule mod_rewrite.c>
+  RewriteCond %{REQUEST_FILENAME} !-d 
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteRule ^admin/products /admin/products.php [QSA,L]
+</IfModule>
+
+<IfModule mod_rewrite.c>
+  RewriteCond %{REQUEST_FILENAME} !-d 
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteRule ^documentation /admin [QSA,L]
+</IfModule>

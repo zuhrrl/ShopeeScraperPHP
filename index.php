@@ -72,9 +72,10 @@ function is_404($url)
                         </svg>
                         <span class="mx-1 text-sm">ID</span>
                     </div>
-                    <div class="md:text-center text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-br from-blue-400 to-indigo-500">
-                        Kaosqu.com
-                    </div>
+                    <h1
+                        class="md:text-center text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-br from-blue-400 to-indigo-500">
+                        <?php echo $website_name;?>
+                    </h1>
                     <div class="flex items-center justify-end w-full">
 
 
@@ -91,9 +92,9 @@ function is_404($url)
                         </div>
                     </div>
                 </div>
-                
-                    <!-- Navigation -->
-                    <?php include 'partials/navigation.php'; ?>
+
+                <!-- Navigation -->
+                <?php include 'partials/navigation.php'; ?>
 
 
                 <div class="relative mt-6 max-w-lg mx-auto">
@@ -187,25 +188,29 @@ function is_404($url)
 
                            
 
-                                    echo "<div class='w-full max-w-sm mx-auto rounded-md shadow-md overflow-hidden'>
-                            <div class='flex items-end justify-end h-56 w-full bg-cover'
-                                style='background-image: url({$productImage})'>
-                                <button
-                                    class='p-2 rounded-full bg-blue-600 text-white mx-5 -mb-4 hover:bg-blue-500 focus:outline-none focus:bg-blue-500'>
-                                    <span class='text-white mt-2'>Rp{$productPrice}</span>
-                                </button>
-                            </div>
-                            <div class='px-5 py-3'>
-                                <a href='{$productlink}'><h3 class='text-blue-700 mt-2'>{$productName}...</h3></a>
-                                <div class='text-gray-600 mt-5'>{$formated_desc}
-                                </div>
-                                <div class='flex items-center justify-center mt-6'>
-                                    <a href='{$productlink}'
-                                        class='px-8 py-2 bg-indigo-600 text-white text-sm font-medium rounded hover:bg-indigo-500 focus:outline-none focus:bg-indigo-500'>Lihat Detail</a>
-                                    
-                                </div>
-                            </div>
-                        </div>";
+                                    echo "
+                                    <article>
+                                    <div class='w-full max-w-sm mx-auto rounded-md shadow-md overflow-hidden'>
+                                    <div class='flex items-end justify-end h-56 w-full bg-cover'
+                                        style='background-image: url({$productImage})'>
+                                        <button
+                                            class='p-2 rounded-full bg-blue-600 text-white mx-5 -mb-4 hover:bg-blue-500 focus:outline-none focus:bg-blue-500'>
+                                            <span class='text-white mt-2'>Rp{$productPrice}</span>
+                                        </button>
+                                    </div>
+                                    <div class='px-5 py-3'>
+                                        <header>
+                                        <h2 class='text-blue-700 mt-2'><a href='{$productlink}'>{$productName}...</a></h3>
+                                        <p class='text-gray-600 mt-5'>{$productDescription}...
+                                        </p>
+                                        </header>
+                                        <div class='flex items-center justify-center mt-6'>
+                                            <a href='{$productlink}'
+                                                class='px-8 py-2 bg-indigo-600 text-white text-sm font-medium rounded hover:bg-indigo-500 focus:outline-none focus:bg-indigo-500'>Lihat Detail</a>
+                                            
+                                        </div>
+                                    </div>
+                                </div></article>";
                                 }
                             } else {
                                 echo "
@@ -252,7 +257,7 @@ function is_404($url)
                                 </div>
                                 <div class='px-5 py-3'>
                                     <header>
-                                    <a href='{$productlink}'><h3 class='text-blue-700 mt-2'>{$productName}...</h3></a>
+                                    <h2 class='text-blue-700 mt-2'><a href='{$productlink}'>{$productName}...</a></h3>
                                     <p class='text-gray-600 mt-5'>{$productDescription}...
                                     </p>
                                     </header>
@@ -290,8 +295,7 @@ function is_404($url)
                         } else {
                             echo "page=".($page - 1);
                         }
-                    } ?>"
-                                class="py-2 px-4 leading-tight bg-white border border-gray-200 text-blue-700 border-r-0 ml-0 rounded-l hover:bg-blue-500 hover:text-white"><span>Previous</a></a>
+                    } ?>" class="py-2 px-4 leading-tight bg-white border border-gray-200 text-blue-700 border-r-0 ml-0 rounded-l hover:bg-blue-500 hover:text-white"><span>Previous</a></a>
                             <a href="<?php if ($page >= $total_pages) {
                         echo '#';
                     } else {
@@ -300,8 +304,7 @@ function is_404($url)
                         } else {
                             echo "page=".($page + 1);
                         }
-                    } ?>"
-                                class="py-2 px-4 leading-tight bg-white border border-gray-200 text-blue-700 rounded-r hover:bg-blue-500 hover:text-white"><span><?php
+                    } ?>" class="py-2 px-4 leading-tight bg-white border border-gray-200 text-blue-700 rounded-r hover:bg-blue-500 hover:text-white"><span><?php
                             if ($page >= $total_pages) {
                                 echo "Last";
                             } else {

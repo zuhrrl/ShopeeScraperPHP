@@ -72,11 +72,13 @@ include "../partials/header.php";
                         </svg>
                         <span class="mx-1 text-sm">ID</span>
                     </div>
-                    <div class="md:text-center text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-br from-blue-400 to-indigo-500">
-                        Kaosqu.com
+                    <div
+                        class="md:text-center text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-br from-blue-400 to-indigo-500">
+                        <?php echo $website_name;?>
+
                     </div>
                     <div class="flex items-center justify-end w-full">
-                        
+
                         <div class="flex sm:hidden">
                             <button @click="isOpen = !isOpen" type="button"
                                 class="text-gray-600 hover:text-gray-500 focus:outline-none focus:text-gray-500"
@@ -90,10 +92,10 @@ include "../partials/header.php";
                         </div>
                     </div>
                 </div>
-                
 
-                            <!-- Navigation -->
-                            <?php include "../partials/navigation.php"; ?>
+
+                <!-- Navigation -->
+                <?php include "../partials/navigation.php"; ?>
 
                 <div class="relative mt-6 max-w-lg mx-auto">
                     <span id="search" class="absolute inset-y-0 left-0 pl-3 flex items-center">
@@ -108,15 +110,17 @@ include "../partials/header.php";
                         class="w-full border rounded-md pl-10 pr-4 py-2 focus:border-blue-500 focus:outline-none focus:shadow-outline"
                         type="text" placeholder="Search">
                 </div>
+
+                
             </div>
         </header>
-       
+
         <main class="my-8">
             <section>
-            <article>
-            <div class="container mx-auto px-6">
+                <article>
+                    <div class="container mx-auto px-6">
 
-            <?php
+                        <?php
             // formating paragraph
             function formatParagraph($text)
             {
@@ -147,7 +151,7 @@ include "../partials/header.php";
                 return $desc;
             }
 
-            $sql = "SELECT product_name, product_description, product_images, product_price, product_link, product_itemid, product_shopid, product_thumbnail, product_stock, product_rating, product_category, product_review_count, product_brand FROM products WHERE product_link = '{$id}' LIMIT 1";
+            $sql = "SELECT product_name, product_description, product_images, product_price, product_link, product_itemid, product_shopid, product_thumbnail, product_stock, product_rating, product_category, product_review_count, product_brand, product_aff_link FROM products WHERE product_link = '{$id}' LIMIT 1";
             $result = $conn->query($sql);
 
             if ($result->num_rows > 0) {
@@ -167,6 +171,7 @@ include "../partials/header.php";
                     $productBrand = $product["product_brand"];
                     $priceSchema = $product["product_price"] . ".00";
                     $formatedParagraph = formatParagraph($productDescription);
+                    $productAffLink = $product['product_aff_link'];
 
                     echo "
                             <div itemscope itemtype='https://schema.org/Product'>
@@ -199,6 +204,45 @@ include "../partials/header.php";
                                 <span class='text-gray-500 mt-3'>Rp.{$productPrice}</span>
                                 </header>
                                 <hr class='my-3'>
+                                <div id='navigation'>
+                                <nav class='flex mb-5' aria-label='Breadcrumb'>
+                                    <ol class='inline-flex items-center space-x-1 md:space-x-2'>
+                                    <li>
+                                    <div class='flex items-center'>
+                                    <svg class='h-5 w-5' fill='none' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' viewBox='0 0 24 24' stroke='currentColor'><path d='M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z'></path></svg>
+                                        <a href='/shop'
+                                            class='text-gray-700 hover:text-gray-900 ml-1 md:ml-2 text-sm font-medium'>Shop</a>
+                                    </div>
+                                </li>
+                                        <li>
+                                            <div class='flex items-center'>
+                                                <svg class='w-6 h-6 text-gray-400' fill='currentColor' viewBox='0 0 20 20'
+                                                    xmlns='http://www.w3.org/2000/svg'>
+                                                    <path fill-rule='evenodd'
+                                                        d='M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z'
+                                                        clip-rule='evenodd'></path>
+                                                </svg>
+                                                <a href='{$productlink}'
+                                                    class='text-gray-700 hover:text-gray-900 ml-1 md:ml-2 text-sm font-medium'>Products</a>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class='flex items-center'>
+                                                <svg class='w-6 h-6 text-gray-400' fill='currentColor' viewBox='0 0 20 20'
+                                                    xmlns='http://www.w3.org/2000/svg'>
+                                                    <path fill-rule='evenodd'
+                                                        d='M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z'
+                                                        clip-rule='evenodd'></path>
+                                                </svg>
+                                                <span class='text-gray-400 ml-1 md:ml-2 text-sm font-medium'
+                                                    aria-current='page'>{$productCategory}</span>
+                                            </div>
+                                        </li>
+                                    </ol>
+                                </nav>
+                                </div>
+                                <hr class='my-3'>
+
                                 <div itemprop='description'>
 
                                 {$formatedParagraph}
@@ -286,9 +330,9 @@ include "../partials/header.php";
                                         
                                      
                                   <div class='flex items-center justify-center mt-2'>
-                                  <button
+                                  <a href='{$productAffLink}'
                                       class='mb-5 px-8 py-2 bg-indigo-600 text-white text-sm font-medium rounded hover:bg-indigo-500 focus:outline-none focus:bg-indigo-500'>Ambil
-                                      Promo</button>
+                                      Promo</a>
                                  
                                             </div>
                                         </div>
@@ -383,9 +427,9 @@ include "../partials/header.php";
                                          
                                       </div>
                                       <div class='flex items-center justify-center mt-2'>
-                                      <button
-                                          class='mb-5 px-8 py-2 bg-indigo-600 text-white text-sm font-medium rounded hover:bg-indigo-500 focus:outline-none focus:bg-indigo-500'>Ambil
-                                          Promo</button>
+                                      <a href='{$productAffLink}'
+                                      class='mb-5 px-8 py-2 bg-indigo-600 text-white text-sm font-medium rounded hover:bg-indigo-500 focus:outline-none focus:bg-indigo-500'>Ambil
+                                      Promo</a>
                                      
                                                 </div>
                                             </div>
@@ -400,11 +444,13 @@ include "../partials/header.php";
             ?>
 
 
-               
-            </div>
-            </article>
-        </section>
+
+                    </div>
+                </article>
+            </section>
         </main>
+
+        
 
         <!-- Footer -->
         <?php include "../partials/footer.php"; ?>
