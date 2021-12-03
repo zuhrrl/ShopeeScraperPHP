@@ -154,7 +154,7 @@ function grabShopee($url)
     curl_setopt($curl, CURLOPT_ENCODING, "gzip");
     curl_setopt ($curl, CURLOPT_POST, 1);
     curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 1);
-    curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 1);
+    curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2);
     $resp = curl_exec($curl);
     if(curl_errno($curl)) {
         return json_encode(array(
