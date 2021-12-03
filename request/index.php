@@ -188,76 +188,9 @@ function getTrending()
 // get url path
 function getProductUrl($productName, $itemid, $shopid)
 {
-    $url = preg_replace("/\s+/", "-", $productName);
-    if (str_contains($url, "&")) {
-        $url = str_replace("&", "-", $url);
-    }
-    if (str_contains($url, "?")) {
-        $url = str_replace("?", "", $url);
-    }
-    if (str_contains($url, "/")) {
-        $url = str_replace("/", "", $url);
-    }
-    if (str_contains($url, "!")) {
-        $url = str_replace("!", "", $url);
-    }
-    if (str_contains($url, "+")) {
-        $url = str_replace("+", "", $url);
-    }
-   
-    if (str_contains($url, "---")) {
-        $url = str_replace("---", "", $url);
-    }
-    if (str_contains($url, ".")) {
-        $url = str_replace(".", "", $url);
-    }
-   
-    if (str_contains($url, "|")) {
-        $url = str_replace("|", "", $url);
-    }
-    if (str_contains($url, "#")) {
-        $url = str_replace("#", "", $url);
-    }
-    if (str_contains($url, "]")) {
-        $url = str_replace("]", "", $url);
-    }
-    if (str_contains($url, "[")) {
-        $url = str_replace("[", "", $url);
-    }
-    if (str_contains($url, ",")) {
-        $url = str_replace(",", "", $url);
-    }
-    if (str_contains($url, "%")) {
-        $url = str_replace("%", "", $url);
-    }
-    if (str_contains($url, "--")) {
-        $url = str_replace("--", "", $url);
-    }
-    if (str_contains($url, '"')) {
-        $url = str_replace('"', "", $url);
-    }
-    if (str_contains($url, "”")) {
-        $url = str_replace("”", "", $url);
-    }
-    if (str_contains($url, "(")) {
-        $url = str_replace("(", "", $url);
-    }
-    if (str_contains($url, ")")) {
-        $url = str_replace(")", "", $url);
-    }
-    if (str_contains($url, "*")) {
-        $url = str_replace("*", "", $url);
-    }
-    if (str_contains($url, "?")) {
-        $url = str_replace("?", "", $url);
-    }
-
-    // replace end url if contain symbol -
-    if (str_contains(substr($url, -1), "-")) {
-        $url = substr($url, 0, -1);
-        $url = rtrim($url, "-");
-    }
-    
+    // replace productname to url
+    $url = preg_replace("/[\*\?\#\&\/\+\!\---\[\]\|\.\,\%\”\"\(\)\s+\/\@\\\\]/", "-", $productName);
+    $url = preg_replace("/\-{2,}/", "-", $productName);
     $url = strtolower($url);
     return $url;
 }
