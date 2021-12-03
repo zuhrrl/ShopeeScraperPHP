@@ -25,6 +25,7 @@ $productReviewCount;
 $productBrand;
 $productAffiliateLink = "";
 $getTotalKeywords = array();
+$errorCode = array();
 
 
 // if post generate
@@ -79,8 +80,7 @@ if (isset($_GET["cron"])) {
 }
 
 // get keywords from database
-function getbyKeywords($keywords)
-{   
+function getbyKeywords($keywords) {   
     global $productGenerated;
     global $productSkipped;
     global $getTotalKeywords;
@@ -90,11 +90,18 @@ function getbyKeywords($keywords)
         $keyword = preg_replace("/\s+/", "", $keyword);
         $productgrabtype = $api_url."?action=get&keywords=".$keyword;
         $products = grabShopee($productgrabtype);
-        // do curl
-        array_push($getTotalKeywords, $keyword);
+
+        if(json_decode($products)->status == 'failed') {
+            array_push($errorCode, 'Curl Failed');
+        } else {
+            // do curl
+            array_push($getTotalKeywords, $keyword);
+                    
+            connectShopee($products);
+ 
+        }
         
-        connectShopee($products);
-        
+       
     }
     if(count($productGenerated) > 0) {
         echo json_encode(array(
@@ -118,6 +125,12 @@ function getbyKeywords($keywords)
                     "success_code" => "No Keywords Inputed",
                 ));
             }
+            if(count($errorCode) > 0) {
+                echo json_encode(array(
+                    "status" => "failed",
+                    "success_code" => "Maybe Curl have problem",
+                ));
+            }
             else {
                 echo json_encode(array(
                     "status" => "failed",
@@ -139,8 +152,19 @@ function grabShopee($url)
     curl_setopt($curl, CURLOPT_URL, $url);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($curl, CURLOPT_ENCODING, "gzip");
+    curl_setopt ($curl, CURLOPT_POST, 1);
+    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 1);
+    curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 1);
     $resp = curl_exec($curl);
-    return $resp;
+    if(curl_errno($curl)) {
+        return json_encode(array(
+            "status" => "failed",
+            "success_code" => "Curl Failed: " . curl_error($curl),
+        ));
+    }
+    else {
+        return $resp;
+    }
 }
 
 
