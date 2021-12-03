@@ -3,7 +3,7 @@
 ## About AGCShopee
 
 AGCShopee is a simple web app to scrape Shopee Products. built with PHP, JS, Tailwindcss
-- Demo: [Demo App](https://kaosqu.com)
+- Demo: [AGCShopee](https://kaosqu.com)
 
 ## Features
 
