@@ -85,6 +85,7 @@ function getbyKeywords($keywords) {
     global $productSkipped;
     global $getTotalKeywords;
     global $api_url;
+    global $errorCode;
     $keywords = json_decode($keywords);
     foreach ($keywords as $keyword) {
         $keyword = preg_replace("/\s+/", "", $keyword);
@@ -129,12 +130,6 @@ function getbyKeywords($keywords) {
                 echo json_encode(array(
                     "status" => "failed",
                     "success_code" => "Maybe Curl have problem",
-                ));
-            }
-            else {
-                echo json_encode(array(
-                    "status" => "failed",
-                    "success_code" => "Unknown Error",
                 ));
             }
             
@@ -190,7 +185,7 @@ function getProductUrl($productName, $itemid, $shopid)
 {
     // replace productname to url
     $url = preg_replace("/[\*\?\#\&\/\+\!\---\[\]\|\.\,\%\”\"\(\)\s+\/\@\\\\]/", "-", $productName);
-    $url = preg_replace("/\-{2,}/", "-", $productName);
+    $url = preg_replace("/\-{2,}/", "-", $url);
     $url = strtolower($url);
     return $url;
 }
