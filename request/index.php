@@ -112,10 +112,19 @@ function getbyKeywords($keywords)
             ));
         }
         else {
-            echo json_encode(array(
-                "status" => "failed",
-                "success_code" => "Unknown Error",
-            ));
+            if($keyword == null) {
+                echo json_encode(array(
+                    "status" => "failed",
+                    "success_code" => "No Keywords Inputed",
+                ));
+            }
+            else {
+                echo json_encode(array(
+                    "status" => "failed",
+                    "success_code" => "Unknown Error",
+                ));
+            }
+            
         }
         
        
@@ -346,10 +355,5 @@ function connectShopee($products)
             
         }
         
-    } else {
-        echo json_encode(array(
-            "status" => "failed",
-            "error_code" => "No Keywords Inputed",
-        ));
     }
 }
